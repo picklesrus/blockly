@@ -51,13 +51,18 @@ Blockly.inject = function(container, opt_options) {
     throw 'Error: container is not in current document.';
   }
   var options = new Blockly.Options(opt_options || {});
+<<<<<<< HEAD
   var subContainer = goog.dom.createDom('div', 'injectionDiv');
   container.appendChild(subContainer);
   var svg = Blockly.createDom_(subContainer, options);
   var workspace = Blockly.createMainWorkspace_(svg, options);
+=======
+  var workspaceSvg = Blockly.createDom_(container, options);
+  var workspace = Blockly.createMainWorkspace_(container, workspaceSvg, options);
+>>>>>>> f6940a3... Split blockly into multiple SVGs:
   Blockly.init_(workspace);
   workspace.markFocused();
-  Blockly.bindEvent_(svg, 'focus', workspace, workspace.markFocused);
+  Blockly.bindEvent_(workspaceSvg, 'focus', workspace, workspace.markFocused);
   Blockly.svgResize(workspace);
   return workspace;
 };
@@ -66,7 +71,7 @@ Blockly.inject = function(container, opt_options) {
  * Create the SVG image.
  * @param {!Element} container Containing element.
  * @param {!Blockly.Options} options Dictionary of options.
- * @return {!Element} Newly created SVG image.
+ * @return {!Array<!Element>} Newly created SVG image.
  * @private
  */
 Blockly.createDom_ = function(container, options) {
@@ -96,7 +101,9 @@ Blockly.createDom_ = function(container, options) {
     'xmlns:html': 'http://www.w3.org/1999/xhtml',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     'version': '1.1',
-    'class': 'blocklySvg'
+    'class': 'blocklySvg',
+    'width': '0',
+    'height': '0',
   }, container);
   /*
   <defs>
@@ -179,16 +186,24 @@ Blockly.createDom_ = function(container, options) {
 /**
  * Create a main workspace and add it to the SVG.
  * @param {!Element} svg SVG element with pattern defined.
+ * @param {!Element} container The container for the workpsace.
  * @param {!Blockly.Options} options Dictionary of options.
  * @return {!Blockly.Workspace} Newly created main workspace.
  * @private
  */
-Blockly.createMainWorkspace_ = function(svg, options) {
+Blockly.createMainWorkspace_ = function(container, svg, options) {
   options.parentWorkspace = null;
   var mainWorkspace = new Blockly.WorkspaceSvg(options);
   mainWorkspace.scale = options.zoomOptions.startScale;
-  svg.appendChild(mainWorkspace.createDom('blocklyMainBackground'));
+  var stuffInsideSvg = mainWorkspace.createDom('blocklyMainBackground');
+  svg.appendChild(stuffInsideSvg);
   // A null translation will also apply the correct initial scale.
+   var trashLayer = mainWorkspace.createTrashLayer();
+  if (trashLayer) {
+    container.appendChild(trashLayer);
+  }
+
+  //Look at this!!!
   mainWorkspace.translate(0, 0);
   mainWorkspace.markFocused();
 

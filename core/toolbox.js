@@ -176,7 +176,8 @@ Blockly.Toolbox.prototype.init = function() {
    * @private
    */
   this.flyout_ = new Blockly.Flyout(workspaceOptions);
-  goog.dom.insertSiblingAfter(this.flyout_.createDom(), workspace.svgGroup_);
+  goog.dom.insertSiblingAfter(this.flyout_.createDom(), 
+    document.getElementsByClassName('blocklySvg')[0]);
   this.flyout_.init(workspace);
 
   this.config_['cleardotPath'] = workspace.options.pathToMedia + '1x1.gif';
@@ -233,15 +234,23 @@ Blockly.Toolbox.prototype.position = function() {
     // Not initialized yet.
     return;
   }
+
   var svg = this.workspace_.getParentSvg();
-  var svgPosition = goog.style.getPageOffset(svg);
+  var divContainer = goog.dom.getParentElement(svg);
+  var divPosition = goog.style.getPageOffset(divContainer);
+
   var svgSize = Blockly.svgSize(svg);
   if (this.horizontalLayout_) {
+<<<<<<< HEAD
     treeDiv.style.left = '0';
+=======
+    treeDiv.style.left = divPosition.x + 'px';
+>>>>>>> f6940a3... Split blockly into multiple SVGs:
     treeDiv.style.height = 'auto';
     treeDiv.style.width = svgSize.width + 'px';
     this.height = treeDiv.offsetHeight;
     if (this.toolboxPosition == Blockly.TOOLBOX_AT_TOP) {  // Top
+<<<<<<< HEAD
       treeDiv.style.top = '0';
     } else {  // Bottom
       treeDiv.style.bottom = '0';
@@ -253,6 +262,22 @@ Blockly.Toolbox.prototype.position = function() {
       treeDiv.style.left = '0';
     }
     treeDiv.style.height = svgSize.height + 'px';
+=======
+      treeDiv.style.top = divPosition.y + 'px';
+    } else {  // Bottom
+      var topOfToolbox = divPosition.y + svgSize.height - treeDiv.offsetHeight;
+      treeDiv.style.top = topOfToolbox + 'px';
+    }
+  } else {
+    if (this.toolboxPosition == Blockly.TOOLBOX_AT_RIGHT) {  // Right
+      treeDiv.style.left =
+          (divPosition.x + svgSize.width - treeDiv.offsetWidth) + 'px';
+    } else {  // Left
+      treeDiv.style.left = divPosition.x + 'px';
+    }
+    treeDiv.style.height = svgSize.height + 'px';
+    treeDiv.style.top = divPosition.y + 'px';
+>>>>>>> f6940a3... Split blockly into multiple SVGs:
     this.width = treeDiv.offsetWidth;
   }
   this.flyout_.position();

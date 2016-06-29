@@ -119,6 +119,7 @@ Blockly.Mutator.prototype.createEditor_ = function() {
   }
   var workspaceOptions = {
     languageTree: quarkXml,
+    hasTrashcan: true,  // temporary for testing.
     parentWorkspace: this.block_.workspace,
     pathToMedia: this.block_.workspace.options.pathToMedia,
     RTL: this.block_.RTL,
@@ -132,6 +133,12 @@ Blockly.Mutator.prototype.createEditor_ = function() {
   this.workspace_.isMutator = true;
   this.svgDialog_.appendChild(
       this.workspace_.createDom('blocklyMutatorBackground'));
+
+  var trashLayer = this.workspace_.createTrashLayer();
+  if (trashLayer) {
+    this.svgDialog_.appendChild(trashLayer);
+  }
+
   return this.svgDialog_;
 };
 
