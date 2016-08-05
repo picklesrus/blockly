@@ -252,6 +252,15 @@ Blockly.Mutator.prototype.setVisible = function(visible) {
     // When the mutator's workspace changes, update the source block.
     this.workspace_.addChangeListener(this.workspaceChanged_.bind(this));
     this.updateColour();
+
+    // Add listeners to update the coordinate transformation matricies when
+    // the mutator bubble has been moved around the screen (e.g. by workspace
+    // block drag, or zoom.)
+    this.mouseUpWrapper_ = Blockly.bindEvent_(this.block_.workspace.svgGroup_,
+      'mouseup', this, this.updateCoordinates_);
+    this.mouseWheelWrapper_ =
+      Blockly.bindEvent_(this.block_.workspace.svgGroup_, 'wheel',
+        this, this.updateCoordinates_);
   } else {
     // Dispose of the bubble.
     this.svgDialog_ = null;
@@ -262,6 +271,12 @@ Blockly.Mutator.prototype.setVisible = function(visible) {
     this.bubble_ = null;
     this.workspaceWidth_ = 0;
     this.workspaceHeight_ = 0;
+    if (this.mouseUpWrapper_) {
+      Blockly.unbindEvent_(this.mouseUpWrapper_);
+    }
+    if (this.mouseWheelWrapper_) {
+      Blockly.unbindEvent_(this.mouseWheelWrapper_);
+    }
     if (this.sourceListener_) {
       this.block_.workspace.removeChangeListener(this.sourceListener_);
       this.sourceListener_ = null;
@@ -269,6 +284,15 @@ Blockly.Mutator.prototype.setVisible = function(visible) {
   }
 };
 
+/**
+ * Update the screen transformation matrix.  This should be called
+ * when the mutator has moved, (e.g.) The parent workspace is dragged or the
+ * block it is attached to has moved.
+ * @private
+ */
+Blockly.Mutator.prototype.updateCoordinates_ = function() {
+  this.workspace_.updateInverseScreenCTM();
+};
 /**
  * Update the source block when the mutator's blocks are changed.
  * Bump down any block that's too high.
