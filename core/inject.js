@@ -51,18 +51,20 @@ Blockly.inject = function(container, opt_options) {
     throw 'Error: container is not in current document.';
   }
   var options = new Blockly.Options(opt_options || {});
-<<<<<<< HEAD
+
   var subContainer = goog.dom.createDom('div', 'injectionDiv');
   container.appendChild(subContainer);
   var svg = Blockly.createDom_(subContainer, options);
   var workspace = Blockly.createMainWorkspace_(svg, options);
-=======
-  var workspaceSvg = Blockly.createDom_(container, options);
-  var workspace = Blockly.createMainWorkspace_(container, workspaceSvg, options);
->>>>>>> f6940a3... Split blockly into multiple SVGs:
+
+//=======
+  //var workspaceSvg = Blockly.createDom_(container, options);
+//  var workspace = Blockly.createMainWorkspace_(container, workspaceSvg, options);
+//>>>>>>> f6940a3... Split blockly into multiple SVGs:
+  
   Blockly.init_(workspace);
   workspace.markFocused();
-  Blockly.bindEvent_(workspaceSvg, 'focus', workspace, workspace.markFocused);
+  Blockly.bindEvent_(svg, 'focus', workspace, workspace.markFocused);
   Blockly.svgResize(workspace);
   return workspace;
 };

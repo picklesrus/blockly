@@ -135,12 +135,7 @@ Blockly.Css.CONTENT = [
     'background-color: #fff;',
     'position: absolute;',
     'outline: none;',
-<<<<<<< HEAD
-    'overflow: hidden;',  /* IE overflows by default. */
-    'display: block;',
-=======
     'overflow: visible;',  /* IE overflows by default. */
->>>>>>> f6940a3... Split blockly into multiple SVGs:
   '}',
 
   '.blocklyWidgetDiv {',

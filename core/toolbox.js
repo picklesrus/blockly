@@ -236,21 +236,16 @@ Blockly.Toolbox.prototype.position = function() {
   }
 
   var svg = this.workspace_.getParentSvg();
-  var divContainer = goog.dom.getParentElement(svg);
-  var divPosition = goog.style.getPageOffset(divContainer);
+//  var divContainer = goog.dom.getParentElement(svg);
+//  var divPosition = goog.style.getPageOffset(divContainer);
 
   var svgSize = Blockly.svgSize(svg);
   if (this.horizontalLayout_) {
-<<<<<<< HEAD
     treeDiv.style.left = '0';
-=======
-    treeDiv.style.left = divPosition.x + 'px';
->>>>>>> f6940a3... Split blockly into multiple SVGs:
-    treeDiv.style.height = 'auto';
+    //treeDiv.style.left = divPosition.x + 'px';
     treeDiv.style.width = svgSize.width + 'px';
     this.height = treeDiv.offsetHeight;
     if (this.toolboxPosition == Blockly.TOOLBOX_AT_TOP) {  // Top
-<<<<<<< HEAD
       treeDiv.style.top = '0';
     } else {  // Bottom
       treeDiv.style.bottom = '0';
@@ -262,22 +257,23 @@ Blockly.Toolbox.prototype.position = function() {
       treeDiv.style.left = '0';
     }
     treeDiv.style.height = svgSize.height + 'px';
-=======
-      treeDiv.style.top = divPosition.y + 'px';
+    //treeDiv.style.top = divPosition.y + 'px';
     } else {  // Bottom
-      var topOfToolbox = divPosition.y + svgSize.height - treeDiv.offsetHeight;
-      treeDiv.style.top = topOfToolbox + 'px';
+    //      var topOfToolbox = divPosition.y + svgSize.height - treeDiv.offsetHeight;
+    //  treeDiv.style.top = topOfToolbox + 'px';
+    treeDiv.style.bottom = '0';
     }
   } else {
     if (this.toolboxPosition == Blockly.TOOLBOX_AT_RIGHT) {  // Right
-      treeDiv.style.left =
-          (divPosition.x + svgSize.width - treeDiv.offsetWidth) + 'px';
+      treeDiv.style.right = '0';
+      //treeDiv.style.left =
+      //    (divPosition.x + svgSize.width - treeDiv.offsetWidth) + 'px';
     } else {  // Left
-      treeDiv.style.left = divPosition.x + 'px';
+      //treeDiv.style.left = divPosition.x + 'px';
+      treeDiv.style.left = '0;'
     }
     treeDiv.style.height = svgSize.height + 'px';
-    treeDiv.style.top = divPosition.y + 'px';
->>>>>>> f6940a3... Split blockly into multiple SVGs:
+    //treeDiv.style.top = divPosition.y + 'px';
     this.width = treeDiv.offsetWidth;
   }
   this.flyout_.position();

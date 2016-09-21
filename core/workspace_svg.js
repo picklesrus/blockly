@@ -856,20 +856,14 @@ Blockly.WorkspaceSvg.prototype.onMouseWheel_ = function(e) {
   var delta = e.deltaY > 0 ? -1 : 1;
   var position = Blockly.mouseToSvg(e, this.getParentSvg(),
       this.getInverseScreenCTM());
-<<<<<<< HEAD
 
-=======
   var position = Blockly.mouseToSvg(e, this.getParentSvg());
->>>>>>> 2943c66... Fix bad merge!
   // Hmm, maybe this belongs in mouseToSvg?
   // Other places mouseSvg is called that need to be investigated:
   //   mouseDownBar (scrollbar.js), moveDrag(workspace.js) 
   position.x += this.translateX;
   position.y += this.translateY;
-<<<<<<< HEAD
 
-=======
->>>>>>> 2943c66... Fix bad merge!
   this.zoom(position.x, position.y, delta);
   e.preventDefault();
 };
