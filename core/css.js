@@ -135,7 +135,8 @@ Blockly.Css.CONTENT = [
     'background-color: #fff;',
     'position: absolute;',
     'outline: none;',
-    'overflow: visible;',  /* IE overflows by default. */
+    'display:block;',
+    'overflow:visible;',
   '}',
 
   '.blocklyWidgetDiv {',
@@ -457,6 +458,7 @@ Blockly.Css.CONTENT = [
     'overflow-x: visible;',
     'overflow-y: auto;',
     'position: absolute;',
+    'z-index:9999;',
   '}',
 
   '.blocklyTreeRoot {',

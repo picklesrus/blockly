@@ -55,7 +55,7 @@ Blockly.inject = function(container, opt_options) {
   var subContainer = goog.dom.createDom('div', 'injectionDiv');
   container.appendChild(subContainer);
   var svg = Blockly.createDom_(subContainer, options);
-  var workspace = Blockly.createMainWorkspace_(svg, options);
+  var workspace = Blockly.createMainWorkspace_(subContainer, svg, options);
 
 //=======
   //var workspaceSvg = Blockly.createDom_(container, options);
