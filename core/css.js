@@ -84,9 +84,10 @@ Blockly.Css.inject = function(hasCss, pathToMedia) {
   // Strip off any trailing slash (either Unix or Windows).
   Blockly.Css.mediaPath_ = pathToMedia.replace(/[\\\/]$/, '');
   text = text.replace(/<<<PATH>>>/g, Blockly.Css.mediaPath_);
-  // Inject CSS tag.
+  // Inject CSS tag at start of head.
   var cssNode = document.createElement('style');
-  document.head.appendChild(cssNode);
+  document.head.insertBefore(cssNode, document.head.firstChild);
+
   var cssTextNode = document.createTextNode(text);
   cssNode.appendChild(cssTextNode);
   Blockly.Css.styleSheet_ = cssNode.sheet;
@@ -148,6 +149,7 @@ Blockly.Css.CONTENT = [
   '.injectionDiv {',
     'height: 100%;',
     'position: relative;',
+    'overflow: hidden;', /* So blocks in drag surface disappear at edges */
   '}',
 
   '.blocklyNonSelectable {',
@@ -155,6 +157,17 @@ Blockly.Css.CONTENT = [
     '-moz-user-select: none;',
     '-webkit-user-select: none;',
     '-ms-user-select: none;',
+  '}',
+
+  '.blocklyBlockDragSurface {',
+    'display: none;',
+    'position: absolute;',
+    'top: 0;',
+    'left: 0;',
+    'right: 0;',
+    'bottom: 0;',
+    'overflow: visible !important;',
+    'z-index: 50;', /* Display below toolbox, but above everything else. */
   '}',
 
   '.blocklyTooltipDiv {',
@@ -295,6 +308,18 @@ Blockly.Css.CONTENT = [
 
   '.blocklyFlyoutButton:hover {',
     'fill: #aaa;',
+  '}',
+
+  '.blocklyFlyoutLabel {',
+    'cursor: default;',
+  '}',
+
+  '.blocklyFlyoutLabelBackground {',
+    'opacity: 0;',
+  '}',
+
+  '.blocklyFlyoutLabelText {',
+    'fill: #000;',
   '}',
 
   /*

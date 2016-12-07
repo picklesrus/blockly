@@ -40,7 +40,7 @@ Blockly.ScrollbarPair = function(workspace) {
   this.workspace_ = workspace;
   this.hScroll = new Blockly.Scrollbar(workspace, true, true);
   this.vScroll = new Blockly.Scrollbar(workspace, false, true);
-  this.corner_ = Blockly.createSvgElement('rect',
+  this.corner_ = Blockly.utils.createSvgElement('rect',
       {'height': Blockly.Scrollbar.scrollbarThickness,
       'width': Blockly.Scrollbar.scrollbarThickness,
       'class': 'blocklyScrollbarBackground'}, null);
@@ -577,14 +577,14 @@ Blockly.Scrollbar.prototype.createDom_ = function() {
   */
   var className = 'blocklyScrollbar' +
       (this.horizontal_ ? 'Horizontal' : 'Vertical');
-   this.outerSvg_ = Blockly.createSvgElement('svg',
+  this.outerSvg_ = Blockly.createSvgElement('svg',
      {'class': className},
      null);
-  this.svgGroup_ = Blockly.createSvgElement('g', {}, this.outerSvg_);
-  this.svgBackground_ = Blockly.createSvgElement('rect',
+  this.svgGroup_ = Blockly.utils.createSvgElement('g', {}, this.outerSvg_);
+  this.svgBackground_ = Blockly.utils.createSvgElement('rect',
       {'class': 'blocklyScrollbarBackground'}, this.svgGroup_);
   var radius = Math.floor((Blockly.Scrollbar.scrollbarThickness - 5) / 2);
-  this.svgHandle_ = Blockly.createSvgElement('rect',
+  this.svgHandle_ = Blockly.utils.createSvgElement('rect',
       {'class': 'blocklyScrollbarHandle', 'rx': radius, 'ry': radius},
       this.svgGroup_);
   Blockly.utils.insertAfter_(this.outerSvg_,
@@ -656,15 +656,16 @@ Blockly.Scrollbar.prototype.updateDisplay_ = function() {
  * @private
  */
 Blockly.Scrollbar.prototype.onMouseDownBar_ = function(e) {
+  this.workspace_.markFocused();
   Blockly.Touch.clearTouchIdentifier();  // This is really a click.
   this.cleanUp_();
-  if (Blockly.isRightButton(e)) {
+  if (Blockly.utils.isRightButton(e)) {
     // Right-click.
     // Scrollbars have no context menu.
     e.stopPropagation();
     return;
   }
-  var mouseXY = Blockly.mouseToSvg(e, this.workspace_.getParentSvg(),
+  var mouseXY = Blockly.utils.mouseToSvg(e, this.workspace_.getParentSvg(),
       this.workspace_.getInverseScreenCTM());
   var mouseLocation = this.horizontal_ ? mouseXY.x : mouseXY.y;
 
@@ -695,8 +696,9 @@ Blockly.Scrollbar.prototype.onMouseDownBar_ = function(e) {
  * @private
  */
 Blockly.Scrollbar.prototype.onMouseDownHandle_ = function(e) {
+  this.workspace_.markFocused();
   this.cleanUp_();
-  if (Blockly.isRightButton(e)) {
+  if (Blockly.utils.isRightButton(e)) {
     // Right-click.
     // Scrollbars have no context menu.
     e.stopPropagation();

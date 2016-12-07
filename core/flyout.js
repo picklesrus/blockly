@@ -291,7 +291,7 @@ Blockly.Flyout.prototype.createDom = function(tagName) {
   // hide/show code  will set up the proper visibility and size later.
   this.svgGroup_ = Blockly.createSvgElement(tagName,
       {'class': 'blocklyFlyout', 'style': 'display:none'}, null);
-  this.svgBackground_ = Blockly.createSvgElement('path',
+  this.svgBackground_ = Blockly.utils.createSvgElement('path',
       {'class': 'blocklyFlyoutBackground'}, this.svgGroup_);
   this.svgGroup_.appendChild(this.workspace_.createDom());
   return this.svgGroup_;
@@ -468,13 +468,13 @@ Blockly.Flyout.prototype.position = function() {
   }
 
   var edgeWidth = this.horizontalLayout_ ?
-      targetWorkspaceMetrics.viewWidth - 2 * this.CORNER_RADIUS : 
+      targetWorkspaceMetrics.viewWidth - 2 * this.CORNER_RADIUS :
       this.width_ - this.CORNER_RADIUS;
 
   var edgeHeight = this.horizontalLayout_ ?
       this.height_ - this.CORNER_RADIUS :
       targetWorkspaceMetrics.viewHeight - 2 * this.CORNER_RADIUS;
-  
+
   this.setBackgroundPath_(edgeWidth, edgeHeight);
 
   var x = targetWorkspaceMetrics.absoluteLeft;
@@ -556,6 +556,7 @@ Blockly.Flyout.prototype.setBackgroundPathVertical_ = function(width, height) {
       atRight ? this.CORNER_RADIUS : -this.CORNER_RADIUS,
       this.CORNER_RADIUS);
   // Bottom.
+
   path.push('h', atRight ? width : -width);
   path.push('z');
   this.svgBackground_.setAttribute('d', path.join(' '));
@@ -584,7 +585,8 @@ Blockly.Flyout.prototype.setBackgroundPathHorizontal_ = function(width,
     // Bottom.
     path.push('a', this.CORNER_RADIUS, this.CORNER_RADIUS, 0, 0, 1,
         -this.CORNER_RADIUS, this.CORNER_RADIUS);
-    path.push('h', -1 * (width));
+    path.push('h', -1 * width);
+
     // Left.
     path.push('a', this.CORNER_RADIUS, this.CORNER_RADIUS, 0, 0, 1,
         -this.CORNER_RADIUS, -this.CORNER_RADIUS);
@@ -768,10 +770,11 @@ Blockly.Flyout.prototype.show = function(xmlList) {
         } else {
           gaps.push(default_gap);
         }
-      } else if (tagName == 'BUTTON') {
-        var label = xml.getAttribute('text');
+      } else if (tagName == 'BUTTON' || tagName == 'LABEL') {
+        // Labels behave the same as buttons, but are styled differently.
+        var isLabel = tagName == 'LABEL';
         var curButton = new Blockly.FlyoutButton(this.workspace_,
-            this.targetWorkspace_, label);
+            this.targetWorkspace_, xml, isLabel);
         contents.push({type: 'button', button: curButton});
         gaps.push(default_gap);
       }
@@ -851,7 +854,7 @@ Blockly.Flyout.prototype.layout_ = function(contents, gaps) {
 
       // Create an invisible rectangle under the block to act as a button.  Just
       // using the block as a button is poor, since blocks have holes in them.
-      var rect = Blockly.createSvgElement('rect', {'fill-opacity': 0}, null);
+      var rect = Blockly.utils.createSvgElement('rect', {'fill-opacity': 0}, null);
       rect.tooltip = block;
       Blockly.Tooltip.bindMouseEvents(rect);
       // Add the rectangles under the blocks, so that the blocks' tooltips work.
@@ -948,7 +951,7 @@ Blockly.Flyout.blockRightClick_ = function(e, block) {
 Blockly.Flyout.prototype.blockMouseDown_ = function(block) {
   var flyout = this;
   return function(e) {
-    if (Blockly.isRightButton(e)) {
+    if (Blockly.utils.isRightButton(e)) {
       Blockly.Flyout.blockRightClick_(e, block);
     } else {
       Blockly.terminateDrag_();
@@ -978,7 +981,7 @@ Blockly.Flyout.prototype.blockMouseDown_ = function(block) {
  * @private
  */
 Blockly.Flyout.prototype.onMouseDown_ = function(e) {
-  if (Blockly.isRightButton(e)) {
+  if (Blockly.utils.isRightButton(e)) {
     // Don't start drags with right clicks.
     Blockly.Touch.clearTouchIdentifier();
     return;
@@ -1126,34 +1129,21 @@ Blockly.Flyout.prototype.isDragTowardWorkspace_ = function(dx, dy) {
   // Direction goes from -180 to 180, with 0 toward the right and 90 on top.
   var dragDirection = Math.atan2(dy, dx) / Math.PI * 180;
 
-  var draggingTowardWorkspace = false;
   var range = this.dragAngleRange_;
   if (this.horizontalLayout_) {
-    if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_TOP) {
-      // Horizontal at top.
-      if (dragDirection < 90 + range && dragDirection > 90 - range) {
-        draggingTowardWorkspace = true;
-      }
-    } else {
-      // Horizontal at bottom.
-      if (dragDirection > -90 - range && dragDirection < -90 + range) {
-        draggingTowardWorkspace = true;
-      }
+    // Check for up or down dragging.
+    if ((dragDirection < 90 + range && dragDirection > 90 - range) ||
+        (dragDirection > -90 - range && dragDirection < -90 + range)) {
+      return true;
     }
   } else {
-    if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_LEFT) {
-      // Vertical at left.
-      if (dragDirection < range && dragDirection > -range) {
-        draggingTowardWorkspace = true;
-      }
-    } else {
-      // Vertical at right.
-      if (dragDirection < -180 + range || dragDirection > 180 - range) {
-        draggingTowardWorkspace = true;
-      }
+    // Check for left or right dragging.
+    if ((dragDirection < range && dragDirection > -range) ||
+        (dragDirection < -180 + range || dragDirection > 180 - range)) {
+      return true;
     }
   }
-  return draggingTowardWorkspace;
+  return false;
 };
 
 /**
@@ -1165,7 +1155,7 @@ Blockly.Flyout.prototype.isDragTowardWorkspace_ = function(dx, dy) {
 Blockly.Flyout.prototype.createBlockFunc_ = function(originBlock) {
   var flyout = this;
   return function(e) {
-    if (Blockly.isRightButton(e)) {
+    if (Blockly.utils.isRightButton(e)) {
       // Right-click.  Don't create a block, let the context menu show.
       return;
     }
@@ -1192,6 +1182,9 @@ Blockly.Flyout.prototype.createBlockFunc_ = function(originBlock) {
     block.onMouseDown_(e);
     Blockly.dragMode_ = Blockly.DRAG_FREE;
     block.setDragging_(true);
+    block.moveToDragSurface_();
+    // Disable workspace resizing.  Reenable at the end of the drag.
+    flyout.targetWorkspace_.setResizesEnabled(false);
   };
 };
 

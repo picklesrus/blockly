@@ -148,7 +148,10 @@ Blockly.Toolbox.prototype.init = function() {
   var workspace = this.workspace_;
   var svg = this.workspace_.getParentSvg();
 
-  // Create an HTML container for the Toolbox menu.
+  /**
+   * HTML container for the Toolbox menu.
+   * @type {Element}
+   */
   this.HtmlDiv =
       goog.dom.createDom(goog.dom.TagName.DIV, 'blocklyToolboxDiv');
   this.HtmlDiv.setAttribute('dir', workspace.RTL ? 'RTL' : 'LTR');
@@ -157,7 +160,7 @@ Blockly.Toolbox.prototype.init = function() {
   // Clicking on toolbox closes popups.
   Blockly.bindEventWithChecks_(this.HtmlDiv, 'mousedown', this,
       function(e) {
-        if (Blockly.isRightButton(e) || e.target == this.HtmlDiv) {
+        if (Blockly.utils.isRightButton(e) || e.target == this.HtmlDiv) {
           // Close flyout.
           Blockly.hideChaff(false);
         } else {
@@ -328,7 +331,7 @@ Blockly.Toolbox.prototype.syncTrees_ = function(treeIn, treeOut, pathToMedia) {
         }
         if (childIn.getAttribute('expanded') == 'true') {
           if (childOut.blocks.length) {
-            // This is a category that directly contians blocks.
+            // This is a category that directly contains blocks.
             // After the tree is rendered, open this category and show flyout.
             openNode = childOut;
           }
@@ -360,6 +363,8 @@ Blockly.Toolbox.prototype.syncTrees_ = function(treeIn, treeOut, pathToMedia) {
         break;
       case 'BLOCK':
       case 'SHADOW':
+      case 'LABEL':
+      case 'BUTTON':
         treeOut.blocks.push(childIn);
         lastElement = childIn;
         break;
@@ -581,7 +586,7 @@ Blockly.Toolbox.TreeNode = function(toolbox, html, opt_config, opt_domHelper) {
 goog.inherits(Blockly.Toolbox.TreeNode, goog.ui.tree.TreeNode);
 
 /**
- * Supress population of the +/- icon.
+ * Suppress population of the +/- icon.
  * @return {!goog.html.SafeHtml} The source for the icon.
  * @override
  */
@@ -608,7 +613,7 @@ Blockly.Toolbox.TreeNode.prototype.onMouseDown = function(e) {
 };
 
 /**
- * Supress the inherited double-click behaviour.
+ * Suppress the inherited double-click behaviour.
  * @param {!goog.events.BrowserEvent} e The browser event.
  * @override
  * @private

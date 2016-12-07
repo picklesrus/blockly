@@ -249,7 +249,7 @@ Blockly.Generator.prototype.valueToCode = function(block, name, outerOrder) {
       // In all known languages multiple such code blocks are not order
       // sensitive.  In fact in Python ('a' 'b') 'c' would fail.
     } else {
-      // The operators outside this code are stonger than the operators
+      // The operators outside this code are stronger than the operators
       // inside this code.  To prevent the code from being pulled apart,
       // wrap the code in parentheses.
       parensNeeded = true;
@@ -360,11 +360,15 @@ Blockly.Generator.prototype.provideFunction_ = function(desiredName, code) {
     var codeText = code.join('\n').replace(
         this.FUNCTION_NAME_PLACEHOLDER_REGEXP_, functionName);
     // Change all '  ' indents into the desired indent.
+    // To avoid an infinite loop of replacements, change all indents to '\0'
+    // character first, then replace them all with the indent.
+    // We are assuming that no provided functions contain a literal null char.
     var oldCodeText;
     while (oldCodeText != codeText) {
       oldCodeText = codeText;
-      codeText = codeText.replace(/^((  )*)  /gm, '$1' + this.INDENT);
+      codeText = codeText.replace(/^((  )*)  /gm, '$1\0');
     }
+    codeText = codeText.replace(/\0/g, this.INDENT);
     this.definitions_[desiredName] = codeText;
   }
   return this.functionNames_[desiredName];
