@@ -588,15 +588,16 @@ Blockly.WorkspaceSvg.prototype.getParentSvg = function() {
 Blockly.WorkspaceSvg.prototype.translate = function(x, y) {
   if (this.wsDragSurface_ && this.dragMode_ != Blockly.DRAG_NONE) {
     this.wsDragSurface_.translateSurface(x,y);
-    //this.svgBlockCanvas.style.display = no
   } else {
     var translation = 'translate(' + x + ',' + y + ') ' +
         'scale(' + this.scale + ')';
     this.svgBlockCanvas_.setAttribute('transform', translation);
     this.svgBubbleCanvas_.setAttribute('transform', translation);
-    if (this.blockDragSurface_) {
-      this.blockDragSurface_.translateAndScaleGroup(x, y, this.scale);
-    }
+  }
+
+  // Now update the block drag surface if we're using one.
+  if (this.blockDragSurface_) {
+    this.blockDragSurface_.translateAndScaleGroup(x, y, this.scale);
   }
 };
 
