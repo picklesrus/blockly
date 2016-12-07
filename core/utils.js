@@ -111,7 +111,8 @@ Blockly.utils.isTargetInput = function(e) {
  * @return {!goog.math.Coordinate} Object with .x and .y properties.
  */
 Blockly.utils.getRelativeXY = function(element) {
-  var xy = new goog.math.Coordinate(0, 0);
+
+    var xy = new goog.math.Coordinate(0, 0);
   // First, check for x and y attributes.
   var x = element.getAttribute('x');
   if (x) {
@@ -121,24 +122,20 @@ Blockly.utils.getRelativeXY = function(element) {
   if (y) {
     xy.y = parseInt(y, 10);
   }
-  
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform');
-   if (transform) {
-    var transformComponents =
-        transform.match(Blockly.utils.getRelativeXY_.XY_REGEXP_);
-    if (transformComponents) {
-      xy.x += parseFloat(transformComponents[1]);
-      if (transformComponents[3]) {
-        xy.y += parseFloat(transformComponents[3]);
-      }
+  var r = transform && transform.match(Blockly.utils.getRelativeXY.XY_REGEX_);
+  if (r) {
+    xy.x += parseFloat(r[1]);
+    if (r[3]) {
+      xy.y += parseFloat(r[3]);
     }
   }
 
   // Third, check for style="transform: translate3d(...)".
   var style = element.getAttribute('style');
   if (style && style.indexOf('translate3d') > -1) {
-    var styleComponents = style.match(Blockly.utils.getRelativeXY_.XY_3D_REGEXP_);
+    var styleComponents = style.match(Blockly.utils.getRelativeXY.XY_3D_REGEX_);
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1]);
       if (styleComponents[3]) {
@@ -146,7 +143,6 @@ Blockly.utils.getRelativeXY = function(element) {
       }
     }
   }
-
   return xy;
 };
 
@@ -190,7 +186,7 @@ Blockly.getScale_REGEXP_ = /scale\(\s*([-+\d.e]+)\s*\)/;
  * @type {!RegExp}
  * @private
  */
-Blockly.getRelativeXY_.XY_3D_REGEXP_ =
+Blockly.utils.getRelativeXY.XY_3D_REGEX_ =
   /transform:\s*translate3d\(\s*([-+\d.e]+)px([ ,]\s*([-+\d.e]+)\s*)px([ ,]\s*([-+\d.e]+)\s*)px\)?/;
 
 Blockly.getInjectionDivXY_ = function(element) {
@@ -198,27 +194,19 @@ Blockly.getInjectionDivXY_ = function(element) {
   var y = 0;
   var scale = 1;
   while (element) {
-    var xy = Blockly.getRelativeXY_(element);
+    var xy = Blockly.utils.getRelativeXY(element);
     // what is scale?!
     var scale = Blockly.getScale_(element);
     x = (x * scale) + xy.x;
     y = (y * scale) + xy.y;
-    if (Blockly.hasClass_(element, 'injectionDiv')) {
+    var classes = element.getAttribute('class') || '';
+    if ((' ' + classes + ' ').indexOf(' injectionDiv ') != -1) {
       break;
     }
     element = element.parentNode;
   }
   return new goog.math.Coordinate(x, y);    
 };
-
-/**
- * Static regex to pull the x,y,z values out of a translate3d() style property.
- * Accounts for same exceptions as XY_REGEXP_.
- * @type {!RegExp}
- * @private
- */
-Blockly.utils.getRelativeXY.XY_3D_REGEX_ =
-  /transform:\s*translate3d\(\s*([-+\d.e]+)px([ ,]\s*([-+\d.e]+)\s*)px([ ,]\s*([-+\d.e]+)\s*)px\)?/;
 
 /**
  * Helper method for creating SVG elements.

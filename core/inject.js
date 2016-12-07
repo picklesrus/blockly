@@ -200,7 +200,7 @@ Blockly.createDom_ = function(container, options) {
  */
 Blockly.createMainWorkspace_ = function(svg, options, blockDragSurface, wsDragSurface) {
   options.parentWorkspace = null;
-  var mainWorkspace = new Blockly.WorkspaceSvg(options, dragSurface);
+  var mainWorkspace = new Blockly.WorkspaceSvg(options, blockDragSurface, wsDragSurface);
   mainWorkspace.scale = options.zoomOptions.startScale;
   svg.appendChild(mainWorkspace.createDom('blocklyMainBackground'));
   if (!options.hasCategories && options.languageTree) {

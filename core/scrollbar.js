@@ -577,7 +577,7 @@ Blockly.Scrollbar.prototype.createDom_ = function() {
   */
   var className = 'blocklyScrollbar' +
       (this.horizontal_ ? 'Horizontal' : 'Vertical');
-  this.outerSvg_ = Blockly.createSvgElement('svg',
+  this.outerSvg_ = Blockly.utils.createSvgElement('svg',
      {'class': className},
      null);
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {}, this.outerSvg_);

@@ -289,7 +289,7 @@ Blockly.Flyout.prototype.createDom = function(tagName) {
   */
   // Setting style to display none to start.  The toolbox and flyout
   // hide/show code  will set up the proper visibility and size later.
-  this.svgGroup_ = Blockly.createSvgElement(tagName,
+  this.svgGroup_ = Blockly.utils.createSvgElement(tagName,
       {'class': 'blocklyFlyout', 'style': 'display:none'}, null);
   this.svgBackground_ = Blockly.utils.createSvgElement('path',
       {'class': 'blocklyFlyoutBackground'}, this.svgGroup_);
@@ -388,7 +388,6 @@ Blockly.Flyout.prototype.getMetrics_ = function() {
     // Flyout is hidden.
     return null;
   }
-
   try {
     var optionBox = this.workspace_.getCanvas().getBBox();
   } catch (e) {
@@ -1205,7 +1204,7 @@ Blockly.Flyout.prototype.placeNewBlock_ = function(originBlock) {
   var element = svgRootOld;
   var xyOld = Blockly.getInjectionDivXY_(svgRootOld);
   if (targetWorkspace.isMutator) {
-    xyOld = Blockly.getSvgXY_(svgRootOld, this.workspace_);
+    xyOld = this.workspace_.getSvgXY(/** @type {!Element} */ (svgRootOld));
   }
 
   // Take into account that the flyout might have been scrolled horizontally
@@ -1253,7 +1252,7 @@ Blockly.Flyout.prototype.placeNewBlock_ = function(originBlock) {
   // main workspace's origin.
   var xyNew = Blockly.getInjectionDivXY_(svgRootNew);
    if (targetWorkspace.isMutator) {
-     xyNew = Blockly.getSvgXY_(svgRootNew, targetWorkspace);
+     xyNew = targetWorkspace.getSvgXY(/* @type {!Element} */(svgRootNew));
    }
 
   // Scale the scroll (getSvgXY_ did not do this).

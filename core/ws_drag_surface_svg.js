@@ -74,7 +74,7 @@ Blockly.WsDragSurfaceSvg.prototype.createDom = function() {
   }
   this.outerDiv_ = document.createElement('div');
   this.outerDiv_.id = 'wsDragLayerWrapper';
-  this.SVG_ = Blockly.createSvgElement('svg', {
+  this.SVG_ = Blockly.utils.createSvgElement('svg', {
     'xmlns': Blockly.SVG_NS,
     'xmlns:html': Blockly.HTML_NS,
     'xmlns:xlink': 'http://www.w3.org/1999/xlink',
@@ -112,7 +112,7 @@ Blockly.WsDragSurfaceSvg.prototype.translateSurface = function(x, y) {
  * @return {goog.math.Coordinate} Current translation of the surface
  */
 Blockly.WsDragSurfaceSvg.prototype.getSurfaceTranslation = function() {
-  var xy = Blockly.getRelativeXY_(this.SVG_);
+  var xy = Blockly.utils.getRelativeXY(this.SVG_);
   return new goog.math.Coordinate(xy.x, xy.y);
 };
 
