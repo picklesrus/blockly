@@ -106,6 +106,8 @@ Blockly.onMouseUp_ = function(e) {
   if (workspace.dragMode_ == Blockly.DRAG_NONE) {
     return;
   }
+  // TODO: Check whether we should do this regardless of drag mode.
+  // See comment on right clicks in workspace.onMouseDown.
   Blockly.Touch.clearTouchIdentifier();
   workspace.resetDragSurface();
   Blockly.Css.setCursor(Blockly.Css.Cursor.OPEN);

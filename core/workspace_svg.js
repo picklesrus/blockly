@@ -860,6 +860,10 @@ Blockly.WorkspaceSvg.prototype.onMouseDown_ = function(e) {
     this.showContextMenu_(e);
     // Since this was a click, not a drag, end the gesture immediately.
     Blockly.Touch.clearTouchIdentifier();
+    // This is to handle the case where the event is pretending to be a right
+    // click event but it was really a long press. In that case, we want to make
+    // sure any in progress drags are stopped.
+    Blockly.onMouseUp_(e);
   } else if (this.scrollbar) {
     this.dragMode_ = Blockly.DRAG_BEGIN;
     // Record the current mouse position.
