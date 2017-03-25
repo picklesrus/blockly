@@ -82,6 +82,8 @@ Blockly.BlockSvg = function(workspace, prototypeName, opt_id) {
   /** @type {boolean} */
   this.rendered = false;
 
+  this.isAboutToDelete_ =  false;
+
   /**
    * Whether to move the block to the drag surface when it is dragged.
    * True if it should move, false if it should be translated directly.
@@ -1057,12 +1059,14 @@ Blockly.BlockSvg.prototype.updateCursor_ = function(e, closestConnection) {
 
   if (showDeleteCursor) {
     Blockly.Css.setCursor(Blockly.Css.Cursor.DELETE);
+    this.setDeleteCursor(true); 
     if (deleteArea == Blockly.DELETE_AREA_TRASH && this.workspace.trashcan) {
       this.workspace.trashcan.setOpen_(true);
     }
     return true;
   } else {
     Blockly.Css.setCursor(Blockly.Css.Cursor.CLOSED);
+    this.setDeleteCursor(false); 
     if (this.workspace.trashcan) {
       this.workspace.trashcan.setOpen_(false);
     }
@@ -1070,6 +1074,33 @@ Blockly.BlockSvg.prototype.updateCursor_ = function(e, closestConnection) {
   }
 };
 
+Blockly.BlockSvg.prototype.setDeleteCursor = function(isDelete) {
+  if (this.isAboutToDelete_ == isDelete) {
+    return;
+   }
+   this.isAboutToDelete_ = isDelete;
+   if (isDelete) {
+   var toolboxen = document.getElementsByClassName('blocklyToolboxDiv');
+   for (var i = 0, toolbox; toolbox = toolboxen[i]; i++) {
+    Blockly.utils.addClass(toolbox, 'deleteCursor');     
+   }
+
+
+    Blockly.utils.addClass(/** @type {!Element} */ (this.svgGroup_),
+                      'blocklyDraggingDelete');
+
+   } else {
+  //  Blockly.utils.removeClass(document.getElementById('blocklyToolboxDiv'), 'deleteCursor');
+var toolboxen = document.getElementsByClassName('blocklyToolboxDiv');
+    Blockly.utils.removeClass(/** @type {!Element} */ (this.svgGroup_),
+                      'blocklyDraggingDelete');
+    for (var i = 0, toolbox; toolbox = toolboxen[i]; i++) {
+     Blockly.utils.removeClass(toolbox, 'deleteCursor');     
+    }
+
+   }
+
+};
 /**
  * Add or remove the UI indicating if this block is movable or not.
  */

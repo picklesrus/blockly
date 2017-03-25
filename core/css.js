@@ -48,6 +48,7 @@ Blockly.Css.Cursor = {
  */
 Blockly.Css.currentCursor_ = '';
 
+  Blockly.Css.showingDeleteCursor_ = false;
 /**
  * Large stylesheet added by Blockly.Css.inject.
  * @type {Element}
@@ -98,6 +99,19 @@ Blockly.Css.inject = function(hasCss, pathToMedia) {
   Blockly.Css.setCursor(Blockly.Css.Cursor.OPEN);
 };
 
+Blockly.Css.setDeleteCursor = function(isDelete) {
+  if (Blockly.Css.showingDeleteCursor_ == isDelete) {
+    return;
+  }
+  Blockly.Css.showingDeleteCursor_ = isDelete;
+  // if (isDelete) {
+  //   window.console.log('setting');
+  //   document.body.style.cursor = 'help';
+  // } else {
+  //   window.console.log('resetting');
+  //       document.body.style.cursor = '';
+  // }
+};
 /**
  * Set the cursor to be displayed when over something draggable.
  * @param {Blockly.Css.Cursor} cursor Enum.
@@ -107,29 +121,54 @@ Blockly.Css.setCursor = function(cursor) {
     return;
   }
   Blockly.Css.currentCursor_ = cursor;
-  var url = 'url(' + Blockly.Css.mediaPath_ + '/' + cursor + '.cur), auto';
-  // There are potentially hundreds of draggable objects.  Changing their style
-  // properties individually is too slow, so change the CSS rule instead.
-  var rule = '.blocklyDraggable {\n  cursor: ' + url + ';\n}\n';
-  Blockly.Css.styleSheet_.deleteRule(0);
-  Blockly.Css.styleSheet_.insertRule(rule, 0);
+//      var foo = document.getElementById('blocklyDiv');
+//       foo.style.cursor = '-webkit.grabbing';
+//   } else {
+//       foo.style.cursor = ''
+//   }
+
+
+//  console.log('changing cursor');
+
+  // var url = 'url(' + "'" + Blockly.Css.mediaPath_ + '/' + cursor + ".cur')" + ', auto';
+  
+
+  // // There are potentially hundreds of draggable objects.  Changing their style
+  // // properties individually is too slow, so change the CSS rule instead.
+  // var rule = '.blocklyDraggable {\n  cursor: ' + url + ';\n}\n';
+  // //Blockly.Css.styleSheet_.deleteRule(0);
+  // var foo = document.getElementById('blocklyDiv');
+  // var tbdiv = document.getElementById('blocklyDiv');
+  // if (foo) {
+  //   if (cursor == Blockly.Css.Cursor.OPEN) {
+  //     foo.style.cursor = 'pointer';
+  //   } else if (cursor == Blockly.Css.Cursor.CLOSED) {
+  //     foo.style.cursor = '-webkit-grabbing'
+  //   } else if (cursor == Blockly.Css.Cursor.CLOSED) {
+  //     foo.style.cursor = 'not-allowed';
+  //   } else {
+  //     foo.style.cursor = '';
+  //   }
+  // }
+
+  //Blockly.Css.styleSheet_.insertRule(rule, 0);
   // There is probably only one toolbox, so just change its style property.
-  var toolboxen = document.getElementsByClassName('blocklyToolboxDiv');
-  for (var i = 0, toolbox; toolbox = toolboxen[i]; i++) {
-    if (cursor == Blockly.Css.Cursor.DELETE) {
-      toolbox.style.cursor = url;
-    } else {
-      toolbox.style.cursor = '';
-    }
-  }
+  // var toolboxen = document.getElementsByClassName('blocklyToolboxDiv');
+  // for (var i = 0, toolbox; toolbox = toolboxen[i]; i++) {
+  //   if (cursor == Blockly.Css.Cursor.DELETE) {
+  //     toolbox.style.cursor = url;
+  //   } else {
+  //     toolbox.style.cursor = '';
+  //   }
+  // }
   // Set cursor on the whole document, so that rapid movements
   // don't result in cursor changing to an arrow momentarily.
-  var html = document.body.parentNode;
-  if (cursor == Blockly.Css.Cursor.OPEN) {
-    html.style.cursor = '';
-  } else {
-    html.style.cursor = url;
-  }
+  // var html = document.body.parentNode;
+  // if (cursor == Blockly.Css.Cursor.OPEN) {
+  //   html.style.cursor = '';
+  // } else {
+  //   html.style.cursor = url;
+  // }
 };
 
 /**
@@ -173,6 +212,7 @@ Blockly.Css.CONTENT = [
 
   '.blocklyBlockDragSurface {',
     'display: none;',
+    'cursor: -webkit-grabbing;',
     'position: absolute;',
     'top: 0;',
     'left: 0;',
@@ -200,6 +240,50 @@ Blockly.Css.CONTENT = [
     'cursor: se-resize;',
     'fill: #aaa;',
   '}',
+
+  '.blocklyWorkspace .blocklyDraggable {',
+     'cursor: grab;',
+     'cursor: -webkit-grab;',
+
+  '}',
+
+
+  '.blocklyDraggable:active {',
+     'cursor: grabbing;',
+     'cursor: -webkit-grabbing;',
+
+  '}',
+  '.blocklyBlockDragSurface .blocklyDraggable {',
+     'cursor: grabbing;',
+     'cursor: -webkit-grabbing;',
+  '}',
+
+   '.blocklyToolboxDiv .blocklyDraggingDelete {',
+      'cursor: help;',
+   '}',
+
+ '.deleteCursor {',
+      'cursor: no-drop;',
+   '}',
+
+
+   '.blocklyBlockDragSurface .blocklyDraggable.blocklyDraggingDelete {',
+      'cursor: no-drop;',
+   '}',
+
+  '.blocklyDragging {',
+     'cursor: grabbing;',
+     'cursor: -webkit-grabbing;',
+  '}',
+  
+  '.blocklyDragging.blocklyDraggingDelete {',
+     'cursor: no-drop;',
+  '}',
+
+  '.blocklyDragging.blocklyDraggingDelete {',
+     'cursor: no-drop',
+  '}',
+
 
   '.blocklyResizeSW {',
     'cursor: sw-resize;',
