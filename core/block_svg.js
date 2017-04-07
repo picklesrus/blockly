@@ -688,6 +688,11 @@ Blockly.BlockSvg.prototype.onMouseUp_ = function(e) {
   Blockly.Touch.clearTouchIdentifier();
   if (Blockly.dragMode_ != Blockly.DRAG_FREE &&
       !Blockly.WidgetDiv.isVisible()) {
+    // Move the block in front of the others. Do this at the end of a click
+    // instead of rearranging the dom on mousedown. This helps with
+    // performance and makes it easier to use psuedo element :active
+    // to set the cursor.
+    this.bringToFront();
     Blockly.Events.fire(
         new Blockly.Events.Ui(this, 'click', undefined, undefined));
   }
@@ -1611,12 +1616,21 @@ Blockly.BlockSvg.prototype.setHighlighted = function(highlighted) {
 Blockly.BlockSvg.prototype.addSelect = function() {
   Blockly.utils.addClass(/** @type {!Element} */ (this.svgGroup_),
                     'blocklySelected');
-  // Move the selected block to the top of the stack.
-  var block = this;
-  do {
-    var root = block.getSvgRoot();
-    root.parentNode.appendChild(root);
-    block = block.getParent();
+};
+
+/**
+ * Move this block to the front of the visible workspace.
+ * <g> tags do not respect z-index so svg renders them in the
+ * order that they are in the dom.  By placing this block first within the
+ * block group's <g>, it will render on top of any other blocks.
+ */
+Blockly.BlockSvg.prototype.bringToFront = function() {
+  // this.svgGroup_.parentNode.insertBefore(this.svgGroup_, this.svgGroup_.parentNode.firstChild);
+   var block = this;
+   do {
+     var root = block.getSvgRoot();
+     root.parentNode.appendChild(root);
+     block = block.getParent();
   } while (block);
 };
 
