@@ -212,7 +212,9 @@ Blockly.Css.CONTENT = [
 
   '.blocklyBlockDragSurface {',
     'display: none;',
+    'cursor: grabbing;',
     'cursor: -webkit-grabbing;',
+    'cursor: -moz-grabbing;',
     'position: absolute;',
     'top: 0;',
     'left: 0;',
@@ -244,18 +246,20 @@ Blockly.Css.CONTENT = [
   '.blocklyWorkspace .blocklyDraggable {',
      'cursor: grab;',
      'cursor: -webkit-grab;',
-
+     'cursor: -moz-grab;',
   '}',
 
 
   '.blocklyDraggable:active {',
      'cursor: grabbing;',
      'cursor: -webkit-grabbing;',
+    'cursor: -moz-grabbing;',
 
   '}',
   '.blocklyBlockDragSurface .blocklyDraggable {',
      'cursor: grabbing;',
      'cursor: -webkit-grabbing;',
+     'cursor: -moz-grabbing;',
   '}',
 
    '.blocklyToolboxDiv .blocklyDraggingDelete {',
@@ -274,6 +278,7 @@ Blockly.Css.CONTENT = [
   '.blocklyDragging {',
      'cursor: grabbing;',
      'cursor: -webkit-grabbing;',
+      'cursor: -moz-grabbing;',
   '}',
   
   '.blocklyDragging.blocklyDraggingDelete {',
